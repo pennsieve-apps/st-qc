@@ -1,0 +1,175 @@
+# yaml-language-server: $schema=https://schemas.pennsieve.io/app-manifest/v1.json
+schemaVersion: "1.0"
+application:
+  name: Spatial Transcriptomics QC
+  description: >-
+    Quality control and normalization of spatial transcriptomics samples, the step after
+    st-prep in every spatial workflow, for Visium spots, Visium HD bins and Xenium / MERSCOPE /
+    CosMx cells alike. Per sample it recomputes the QC metrics (total counts, genes detected,
+    percent mitochondrial counts, control-probe fraction for imaging panels), removes outlier
+    observations with adaptive MAD thresholds (default; Germain et al. 2020, Heumos et al. 2023)
+    or fixed cutoffs, drops genes seen in too few observations, keeps the raw counts in
+    layers["counts"], log-normalizes X (normalize_total + log1p), selects highly variable
+    genes (seurat_v3 on the counts) and computes a seeded PCA. Writes the filtered
+    spatial/<sample_id>.h5ad plus qc/ tables (qc_summary.csv, thresholds.csv, removed.csv)
+    and figures per sample.
+  type: processor
+  tags:
+    - spatial-transcriptomics
+    - transcriptomics
+    - genomics
+    - single-cell
+    - visium
+    - xenium
+    - merscope
+    - cosmx
+    - quality-control
+    - normalization
+runtime:
+  cpu: 2048
+  # Measured in the linux/amd64 image under emulation on an M-series Mac; see README "Runtime".
+  memory: 16384
+  computeTypes:
+    - standard
+  timeoutSeconds: 10800
+parameters:
+  - name: FILTER_MODE
+    type: string
+    label: Filter mode
+    description: >-
+      mad: an observation is an outlier when log1p(total_counts) or log1p(n_genes_by_counts) is
+      more than MADS median absolute deviations below the sample's median, or pct_counts_mt is more
+      than MADS MADs above the median and above MAX_PCT_MT (thresholds adapt to each sample).
+      fixed: MIN_COUNTS, MIN_GENES, MAX_PCT_MT (kind-aware defaults when 0). none: nothing is
+      removed; the sample is only normalized. Imaging panels also drop cells whose control-probe
+      fraction exceeds MAX_CONTROL_FRACTION (mad and fixed).
+    defaultValue: mad
+    validValues: [mad, fixed, none]
+  - name: MADS
+    type: number
+    label: MADs
+    description: Number of median absolute deviations for FILTER_MODE=mad (5 is permissive; 3 is strict).
+    defaultValue: 5
+    min: 0.5
+    max: 50
+  - name: MIN_COUNTS
+    type: integer
+    label: Minimum total counts (fixed mode)
+    description: >-
+      FILTER_MODE=fixed: observations with fewer total counts are removed. 0 = default by kind of
+      observation: 500 for Visium spots, 50 for Visium HD bins, 10 for cells.
+    defaultValue: 0
+    min: 0
+  - name: MIN_GENES
+    type: integer
+    label: Minimum genes detected (fixed mode)
+    description: >-
+      FILTER_MODE=fixed: observations with fewer genes detected are removed. 0 = default by kind:
+      250 for spots, 20 for bins, 5 for cells.
+    defaultValue: 0
+    min: 0
+  - name: MAX_PCT_MT
+    type: number
+    label: Maximum % mitochondrial counts
+    description: >-
+      Observations with a higher percentage of mitochondrial counts (MT-/mt- genes) are removed.
+      In mad mode an observation must also be above the MAD cut, so a sample with uniformly high
+      mitochondrial content (heart, kidney) is not emptied. Ignored by panels without MT genes.
+    defaultValue: 20
+    min: 0
+    max: 100
+  - name: MAX_CONTROL_FRACTION
+    type: number
+    label: Maximum control-probe fraction
+    description: >-
+      Imaging-based platforms only: cells whose control counts (negative probes, blank codewords)
+      exceed this fraction of counts + control counts are removed, in mad and fixed modes.
+    defaultValue: 0.1
+    min: 0
+    max: 1
+  - name: MIN_CELLS_PER_GENE
+    type: integer
+    label: Minimum observations per gene
+    description: >-
+      Genes detected in fewer kept observations are dropped (every platform; 0 keeps every gene,
+      which targeted panels may prefer).
+    defaultValue: 3
+    min: 0
+  - name: TARGET_SUM
+    type: number
+    label: Normalization target sum
+    description: >-
+      Counts per observation after normalize_total, before log1p. 0 = the sample's median total
+      counts (scanpy's default). 100 is the usual choice for imaging panels of a few hundred genes.
+    defaultValue: 0
+    min: 0
+  - name: N_HVG
+    type: integer
+    label: Highly variable genes
+    description: >-
+      Number of highly variable genes (scanpy seurat_v3 flavour on the counts) used for PCA.
+      Panels with at most this many genes use every gene.
+    defaultValue: 2000
+    min: 0
+  - name: N_PCS
+    type: integer
+    label: Principal components
+    description: Number of principal components (obsm["X_pca"]), capped by the sample size.
+    defaultValue: 50
+    min: 1
+    max: 500
+  - name: SEED
+    type: integer
+    description: Random seed for the PCA solver.
+    defaultValue: 42
+  - name: THREADS
+    type: integer
+    label: Threads
+    description: BLAS / numba threads; 0 = from the container's CPU quota.
+    defaultValue: 0
+    min: 0
+    max: 64
+# Each input in its own folder (placement: subfolder) when linked; without links the files are
+# found by name anywhere under INPUT_DIR.
+inputs:
+  - name: spatial
+    description: >-
+      st-prep's <sample_id>.h5ad, one per sample: raw counts in X (CSR), obsm["spatial"],
+      uns["pennsieve"] (platform, kind), uns["spatial"] images for Visium.
+    formats:
+      - format_3590
+    mediaTypes:
+      - application/x-hdf5
+    placement: subfolder
+    required: true
+  - name: metadata
+    description: >-
+      st-prep's samples.csv (sample_id, path, platform, kind, n_obs, n_genes, n_obs_in_tissue and any
+      extra sample-sheet columns); prep.json is ignored.
+    mediaTypes:
+      - text/csv
+      - application/json
+    placement: subfolder
+    required: true
+outputs:
+  - name: spatial
+    description: >-
+      spatial/<sample_id>.h5ad: the kept observations and genes in input order, X log-normalized
+      float32 CSR, layers["counts"] raw counts, var["highly_variable"], obsm["X_pca"], uns["pca"],
+      uns["pennsieve"]["normalized"]=true and ["target_sum"]; spatial/provenance.json.
+    formats:
+      - format_3590
+    mediaTypes:
+      - application/x-hdf5
+      - application/json
+  - name: qc
+    description: >-
+      qc/qc_summary.csv (per sample: observations and genes before/after, medians, thresholds,
+      removals by reason), qc/thresholds.csv (per sample x metric: median, MAD, threshold, source),
+      qc/removed.csv (sample_id, obs_id, reason), qc/<sample_id>_qc.png (histograms with
+      thresholds), qc/<sample_id>_spatial_counts.png (spatial scatter of total counts and of the
+      removed observations), qc/summary.json, qc/provenance.json.
+    mediaTypes:
+      - text/csv
+      - image/png
+      - application/json

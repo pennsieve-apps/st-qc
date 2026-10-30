@@ -1,0 +1,215 @@
+cff-version: "1.2.0"
+message: If you use this app, please cite it and the works it builds on, listed under references.
+type: software
+title: Spatial Transcriptomics QC
+abstract: Quality control and normalization of spatial transcriptomics samples (Visium spots, Visium HD
+  bins, Xenium / MERSCOPE / CosMx cells). Removes outlier observations with adaptive MAD thresholds or
+  fixed cutoffs, keeps the raw counts, log-normalizes, selects highly variable genes and computes a PCA,
+  with per-sample tables and figures.
+authors:
+- name: Pennsieve (University of Pennsylvania)
+repository-code: https://github.com/pennsieve-apps/st-qc
+license: Apache-2.0
+keywords:
+- spatial-transcriptomics
+- transcriptomics
+- genomics
+- single-cell
+- visium
+- xenium
+- merscope
+- cosmx
+- quality-control
+- normalization
+references:
+- type: article
+  title: Best practices for single-cell analysis across modalities
+  authors:
+  - family-names: Heumos
+    given-names: Lukas
+  - family-names: Schaar
+    given-names: Anna C.
+  - family-names: Lance
+    given-names: Christopher
+  - family-names: Litinetskaya
+    given-names: Anastasia
+  - family-names: Drost
+    given-names: Felix
+  - family-names: Zappia
+    given-names: Luke
+  - family-names: Lücken
+    given-names: Malte D.
+  - family-names: Strobl
+    given-names: Daniel C.
+  - family-names: Henao
+    given-names: Juan
+  - family-names: Curion
+    given-names: Fabiola
+  - name: Single-cell Best Practices Consortium
+  - family-names: Aliee
+    given-names: Hananeh
+  - family-names: Ansari
+    given-names: Meshal
+  - family-names: Badia-i-Mompel
+    given-names: Pau
+  - family-names: Büttner
+    given-names: Maren
+  - family-names: Dann
+    given-names: Emma
+  - family-names: Dimitrov
+    given-names: Daniel
+  - family-names: Dony
+    given-names: Leander
+  - family-names: Frishberg
+    given-names: Amit
+  - family-names: He
+    given-names: Dongze
+  - family-names: Hediyeh-zadeh
+    given-names: Soroor
+  - family-names: Hetzel
+    given-names: Leon
+  - family-names: Ibarra
+    given-names: Ignacio L.
+  - family-names: Jones
+    given-names: Matthew G.
+  - family-names: Lotfollahi
+    given-names: Mohammad
+  - family-names: Martens
+    given-names: Laura D.
+  - family-names: Müller
+    given-names: Christian L.
+  - family-names: Nitzan
+    given-names: Mor
+  - family-names: Ostner
+    given-names: Johannes
+  - family-names: Palla
+    given-names: Giovanni
+  - family-names: Patro
+    given-names: Rob
+  - family-names: Piran
+    given-names: Zoe
+  - family-names: Ramírez-Suástegui
+    given-names: Ciro
+  - family-names: Saez-Rodriguez
+    given-names: Julio
+  - family-names: Sarkar
+    given-names: Hirak
+  - family-names: Schubert
+    given-names: Benjamin
+  - family-names: Sikkema
+    given-names: Lisa
+  - family-names: Srivastava
+    given-names: Avi
+  - family-names: Tanevski
+    given-names: Jovan
+  - family-names: Virshup
+    given-names: Isaac
+  - family-names: Weiler
+    given-names: Philipp
+  - family-names: Schiller
+    given-names: Herbert B.
+  - family-names: Theis
+    given-names: Fabian J.
+  year: 2023
+  journal: Nature Reviews Genetics
+  volume: 24
+  issue: '8'
+  start: '550'
+  end: '572'
+  doi: 10.1038/s41576-023-00586-w
+  identifiers:
+  - type: other
+    value: 'pmid:37002403'
+    description: PubMed ID
+- type: article
+  title: pipeComp, a general framework for the evaluation of computational pipelines, reveals performant
+    single cell RNA-seq preprocessing tools
+  authors:
+  - family-names: Germain
+    given-names: Pierre-Luc
+  - family-names: Sonrel
+    given-names: Anthony
+  - family-names: Robinson
+    given-names: Mark D.
+  year: 2020
+  journal: Genome Biology
+  volume: 21
+  issue: '1'
+  start: '227'
+  doi: 10.1186/s13059-020-02136-7
+  identifiers:
+  - type: other
+    value: 'pmid:32873325'
+    description: PubMed ID
+- type: article
+  title: Comprehensive Integration of Single-Cell Data
+  authors:
+  - family-names: Stuart
+    given-names: Tim
+  - family-names: Butler
+    given-names: Andrew
+  - family-names: Hoffman
+    given-names: Paul
+  - family-names: Hafemeister
+    given-names: Christoph
+  - family-names: Papalexi
+    given-names: Efthymia
+  - family-names: Mauck
+    given-names: William M.
+  - family-names: Hao
+    given-names: Yuhan
+  - family-names: Stoeckius
+    given-names: Marlon
+  - family-names: Smibert
+    given-names: Peter
+  - family-names: Satija
+    given-names: Rahul
+  year: 2019
+  journal: Cell
+  volume: 177
+  issue: '7'
+  start: '1888'
+  end: 1902.e21
+  doi: 10.1016/j.cell.2019.05.031
+  identifiers:
+  - type: other
+    value: 'pmid:31178118'
+    description: PubMed ID
+- type: article
+  title: 'SCANPY: large-scale single-cell gene expression data analysis'
+  authors:
+  - family-names: Wolf
+    given-names: F. Alexander
+  - family-names: Angerer
+    given-names: Philipp
+  - family-names: Theis
+    given-names: Fabian J.
+  year: 2018
+  journal: Genome Biology
+  volume: 19
+  issue: '1'
+  start: '15'
+  doi: 10.1186/s13059-017-1382-0
+  identifiers:
+  - type: other
+    value: 'pmid:29409532'
+    description: PubMed ID
+- type: article
+  title: 'anndata: Access and store annotated data matrices'
+  authors:
+  - family-names: Virshup
+    given-names: Isaac
+  - family-names: Rybakov
+    given-names: Sergei
+  - family-names: Theis
+    given-names: Fabian J.
+  - family-names: Angerer
+    given-names: Philipp
+  - family-names: Wolf
+    given-names: F. Alexander
+  year: 2024
+  journal: Journal of Open Source Software
+  volume: 9
+  issue: '101'
+  start: '4371'
+  doi: 10.21105/joss.04371
