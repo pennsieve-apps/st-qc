@@ -213,3 +213,65 @@ references:
   issue: '101'
   start: '4371'
   doi: 10.21105/joss.04371
+- type: article
+  title: High resolution mapping of the tumor microenvironment using integrated single-cell, spatial and
+    in situ analysis
+  authors:
+  - family-names: Janesick
+    given-names: Amanda
+  - family-names: Shelansky
+    given-names: Robert
+  - family-names: Gottscho
+    given-names: Andrew D.
+  - family-names: Wagner
+    given-names: Florian
+  - family-names: Williams
+    given-names: Stephen R.
+  - family-names: Rouault
+    given-names: Morgane
+  - family-names: Beliakoff
+    given-names: Ghezal
+  - family-names: Morrison
+    given-names: Carolyn A.
+  - family-names: Oliveira
+    given-names: Michelli F.
+  - family-names: Sicherman
+    given-names: Jordan T.
+  - family-names: Kohlway
+    given-names: Andrew
+  - family-names: Abousoud
+    given-names: Jawad
+  - family-names: Drennon
+    given-names: Tingsheng Yu
+  - family-names: Mohabbat
+    given-names: Seayar H.
+  - name: 10x Development Teams
+  - family-names: Taylor
+    given-names: Sarah E. B.
+  year: 2023
+  journal: Nature Communications
+  volume: 14
+  issue: '1'
+  start: '8353'
+  doi: 10.1038/s41467-023-43458-x
+  identifiers:
+  - type: other
+    value: 'pmid:38114474'
+    description: PubMed ID
+  notes: Demo data (10x Genomics Xenium FFPE Human Breast Cancer replicates 1 and 2, CC BY 4.0).
+- type: data
+  title: '10x Visium Spatial Transcriptomics Dataset: Kidney (3) and Lung (5) Cancer with Tertiary Lymphoid
+    Structures'
+  authors:
+  - family-names: Dawo
+    given-names: Sebastian
+  - family-names: Nonchev
+    given-names: Kalin
+  - family-names: Silina
+    given-names: Karina
+  year: 2025
+  publisher:
+    name: Zenodo
+  doi: 10.5281/zenodo.14620362
+  license: CC-BY-4.0
+  notes: Demo data.

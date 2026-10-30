@@ -76,11 +76,15 @@ def qc_histograms(sample_id: str, kind: str, obs, removed: np.ndarray, thr, n_be
           thr.min_counts, "below", log_x=True)
     _hist(axes[1], genes, removed, 50, "genes detected", thr.min_genes, "below")
     _hist(axes[2], mt, removed, 50, "% mitochondrial counts", thr.max_pct_mt, "above")
+    if mt.size and np.nanmax(mt) == 0:
+        axes[2].text(0.5, 0.55, "no mitochondrial counts\n(none in the panel?)", transform=axes[2].transAxes,
+                     ha="center", va="center", fontsize=8.5, color=INK_2)
     if has_control:
         ctrl = obs["control_fraction"].to_numpy(dtype=float)
         _hist(axes[3], ctrl, removed, np.linspace(0, max(ctrl.max(), 0.2), 50), "control fraction",
               thr.max_control_fraction, "above")
-    axes[0].legend(frameon=False, fontsize=7.5, loc="upper left")
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, frameon=False, fontsize=8, loc="upper right", ncol=2)
     pct = 100.0 * (n_before - n_after) / n_before if n_before else 0.0
     fig.suptitle(f"{sample_id} · QC ({kind}s): {n_before:,} → {n_after:,} observations, {pct:.1f} % removed · "
                  f"FILTER_MODE={thr.mode}", x=0.01, ha="left", fontsize=11, fontweight="bold")

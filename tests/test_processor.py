@@ -214,3 +214,19 @@ def test_mt_cut_applies_when_mad_is_zero():
     assert thr.max_pct_mt == 20
     flags = Q.flag_observations(a, thr)
     assert flags["high_mt"].to_numpy().nonzero()[0].tolist() == [0]
+
+
+def test_empty_observations_do_not_break_the_mt_cut():
+    """Cells with no counts (0/0 % mt) must not turn the mitochondrial threshold into NaN."""
+    from processor import qc as Q
+    from processor.main import read_parameters
+
+    rng = np.random.default_rng(1)
+    counts = rng.poisson(20, size=(100, 10)).astype(np.int32)
+    counts[:3] = 0
+    a = ad.AnnData(sp.csr_matrix(counts), var=pd.DataFrame(index=[f"G{i}" for i in range(10)]))
+    Q.compute_qc_metrics(a)
+    assert not a.obs["pct_counts_mt"].isna().any()
+    thr = Q.choose_thresholds(a, read_parameters({}), "cell")
+    assert thr.max_pct_mt == 20
+    assert Q.flag_observations(a, thr)["low_counts"].to_numpy()[:3].all()

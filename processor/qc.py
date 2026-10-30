@@ -71,6 +71,9 @@ def compute_qc_metrics(adata: AnnData) -> None:
     sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True)
     for c in ("total_counts", "n_genes_by_counts", "pct_counts_mt", "total_counts_mt"):
         adata.obs[c] = adata.obs[c].astype(np.float32 if c == "pct_counts_mt" else np.float64)
+    # Observations without counts have 0/0 = NaN % mt; call it 0 so medians and MADs stay defined
+    # (they are removed by the count thresholds anyway).
+    adata.obs["pct_counts_mt"] = adata.obs["pct_counts_mt"].fillna(0.0)
     if "control_counts" in adata.obs:
         ctrl = pd.to_numeric(adata.obs["control_counts"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
         total = adata.obs["total_counts"].to_numpy(dtype=np.float64) + ctrl
@@ -80,6 +83,9 @@ def compute_qc_metrics(adata: AnnData) -> None:
 
 
 def _mad(values: np.ndarray) -> tuple[float, float]:
+    values = values[np.isfinite(values)]
+    if values.size == 0:
+        return 0.0, 0.0
     med = float(np.median(values))
     return med, float(np.median(np.abs(values - med)))
 

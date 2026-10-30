@@ -31,7 +31,7 @@ runtime:
   memory: 16384
   computeTypes:
     - standard
-  timeoutSeconds: 10800
+  timeoutSeconds: 7200
 parameters:
   - name: FILTER_MODE
     type: string
