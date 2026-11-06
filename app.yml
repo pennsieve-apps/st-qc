@@ -139,7 +139,7 @@ inputs:
     formats:
       - format_3590
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
     placement: subfolder
     required: true
   - name: metadata
@@ -160,7 +160,7 @@ outputs:
     formats:
       - format_3590
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
       - application/json
   - name: qc
     description: >-
